@@ -1,0 +1,15 @@
+
+{
+  "manifest_version": 3,
+  "name": "L3 Sparx Helper",
+  "version": "1.0",
+  "description": "Helps read Sparx Maths questions and enter checked answers.",
+  "permissions": ["activeTab"],
+  "host_permissions": ["https://*.sparxmaths.uk/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://*.sparxmaths.uk/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
