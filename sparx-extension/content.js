@@ -1,5 +1,6 @@
 
 const panel = document.createElement("div");
+
 panel.id = "l3-sparx-helper";
 
 panel.innerHTML = `
@@ -7,14 +8,11 @@ panel.innerHTML = `
     🍌 L3 Sparx Helper
   </div>
 
-  <input
-    id="l3-answer"
-    type="text"
-    placeholder="Enter your checked answer"
-    style="width:180px;padding:8px;margin-bottom:8px;"
-  >
+  <input id="l3-answer" type="text"
+    placeholder="Enter checked answer"
+    style="width:180px;padding:8px;margin-bottom:8px;">
 
-  <button id="l3-fill" style="padding:8px;cursor:pointer;">
+  <button id="l3-fill" style="padding:8px;">
     Fill answer
   </button>
 
@@ -47,49 +45,18 @@ document.getElementById("l3-fill").addEventListener("click", () => {
     return;
   }
 
-  // Find Sparx's actual answer field, not our own panel.
-  const fields = [
-    ...document.querySelectorAll(
-      'input:not([type="hidden"]), textarea, [contenteditable="true"]'
-    )
-  ].filter(field =>
-    !panel.contains(field) &&
-    field.getClientRects().length &&
-    !field.disabled &&
-    !field.readOnly
-  );
-
-  // Prefer Sparx's number-answer box.
-  const field = fields.find(field =>
-    field.getAttribute("placeholder")?.toLowerCase().includes("enter number")
-  ) || fields.find(field =>
-    field.getAttribute("placeholder")?.toLowerCase().includes("enter")
+  const field = document.querySelector(
+    '[data-number-field="TDE"] input[placeholder="Enter number"]'
   );
 
   if (!field) {
-    status.textContent = "Couldn't find Sparx's answer box.";
+    status.textContent = "Answer field not found in this page frame.";
     return;
   }
 
   field.focus();
+  field.click();
 
-  if (field.isContentEditable) {
-    field.textContent = answer;
-  } else {
-    const setter = Object.getOwnPropertyDescriptor(
-      Object.getPrototypeOf(field),
-      "value"
-    )?.set;
-
-    if (setter) {
-      setter.call(field, answer);
-    } else {
-      field.value = answer;
-    }
-  }
-
-  field.dispatchEvent(new Event("input", { bubbles: true }));
-  field.dispatchEvent(new Event("change", { bubbles: true }));
-
-  status.textContent = "Answer filled! Check it before submitting.";
+  status.textContent =
+    "Found Sparx answer field! Use Sparx's keypad to enter " + answer + ".";
 });
